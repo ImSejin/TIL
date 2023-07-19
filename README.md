@@ -1,8 +1,7 @@
 ---
-description: Effective Java
+description: Java programming language
 coverY: 0
 ---
 
-# 이펙티브 자바
+# Java
 
-이펙티브 자바에 대해 알아보자.
