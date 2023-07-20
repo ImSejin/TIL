@@ -1,12 +1,16 @@
 {
-	"plugins": [
-		"comments-footer"
-	],
-	"pluginsConfig": {
-		"comments-footer": {
-			"type": "github",
-			"repo": "ImSejin/TIL",
-			"copyright": "Copyrightⓒ imsejin"
-		}
-	}
+  "plugins": [
+    "comments-footer",
+    "disqus"
+  ],
+  "pluginsConfig": {
+    "comments-footer": {
+      "type": "github",
+      "repo": "ImSejin/TIL",
+      "copyright": "Copyrightⓒ imsejin"
+    },
+    "disqus": {
+      "shortName": "imsejin"
+    }
+  }
 }
