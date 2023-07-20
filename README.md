@@ -1,7 +1,7 @@
 ---
-description: Java programming language
-coverY: 0
+description: 프로그래밍
 ---
 
-# Java
+# Programming
 
+프로그래밍 전반에 관하여 기록합니다.
