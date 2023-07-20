@@ -1,0 +1,12 @@
+{
+	"plugins": [
+		"comments-footer"
+	],
+	"pluginsConfig": {
+		"comments-footer": {
+			"type": "github",
+			"repo": "ImSejin/TIL",
+			"copyright": "Copyrightⓒ imsejin"
+		}
+	}
+}
