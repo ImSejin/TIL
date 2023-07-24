@@ -55,7 +55,7 @@ public class SquareBlock {
 
 ### Object Adapter (객체 어댑터)
 
-클라이언트가 원하는 타입을 상속하고 [우리가 핸들링할 수 있는 객체](#user-content-fn-1)[^1]를 필드로 선언하는 형태입니다.
+클라이언트가 원하는 타입을 구현하고 [우리가 핸들링할 수 있는 객체](#user-content-fn-1)[^1]를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
 
 ```java
 @Setter
@@ -87,32 +87,20 @@ toy.play(); // Toy is joined with circle block whose area is 12.56
 
 ### Class Adapter (클래스 어댑터)
 
-만약 `SquareBlock`이 인터페이스라면 다중 상속으로 해결할 수도 있습니다.
+Adaptee를 <mark style="background-color:purple;">상속</mark>하여 해결할 수도 있습니다.
 
 ```java
-public interface SquareBlock {
-
-    int getArea();
-
-}
-```
-
-`CircleBlock`과 `SquareBlock`를 모두 구현하는 어댑터를 만들면 됩니다.
-
-```java
-@RequiredArgsConstructor
-public class BlockAdapter implements SquareBlock, CircleBlock {
+public class BlockAdapter extends SquareBlock implements CircleBlock {
 
     private final int width;
+
+    public BlockAdapter(int width) {
+        super(width);
+    }
 
     @Override
     public double area() {
         return this.width * 3.14;
-    }
-
-    @Override
-    public int getArea() {
-        return this.width * 2;
     }
 
 }
@@ -128,7 +116,7 @@ toy.play(); // Toy is joined with circle block whose area is 18.84
 
 ### 주의사항
 
-클래스 어댑터는 제약사항이 하나 있습니다. 인터페이스의 Method Signature가 동일하고 반환 타입이 서로 호환되지 않는 관계라면 컴파일 에러가 발생하는 점입니다.
+상속은 제약사항이 있습니다. 인터페이스의 Method Signature가 동일하고 반환 타입이 서로 호환되지 않는 관계라면 컴파일 에러가 발생하는 점입니다.
 
 만약 `CircleBlock`이 아래와 같았다고 가정해봅시다.
 
@@ -140,17 +128,20 @@ public interface CircleBlock {
 }
 ```
 
-`BlockAdapter`가 두 인터페이스를 구현할 때 문제가 발생합니다.
+`BlockAdapter`가 인터페이스를 구현할 때 문제가 발생합니다.
 
 ```java
-@RequiredArgsConstructor
-public class BlockAdapter implements SquareBlock, CircleBlock {
+public class BlockAdapter extends SquareBlock implements CircleBlock {
 
     private final int width;
 
+    public BlockAdapter(int width) {
+        super(width);
+    }
+
     @Override
-    public int getArea() { // Compile Error
-        return this.width * 2;
+    public double getArea() { // Compile Error
+        return this.width * 3.14;
     }
 
 }
