@@ -9,8 +9,7 @@ description: 객체 결합
 
 ## 참고
 
-{% embed
-url="https://itwiki.kr/w/GoF_%EB%94%94%EC%9E%90%EC%9D%B8_%ED%8C%A8%ED%84%B4#%EA%B5%AC%EC%A1%B0_%ED%8C%A8%ED%84%B4(Structural_Pattern)" %}
+{% embed url="https://itwiki.kr/w/GoF_%EB%94%94%EC%9E%90%EC%9D%B8_%ED%8C%A8%ED%84%B4#%EA%B5%AC%EC%A1%B0_%ED%8C%A8%ED%84%B4(Structural_Pattern)" %}
 
 {% embed url="https://en.wikipedia.org/wiki/Design_Patterns" %}
 
