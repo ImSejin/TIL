@@ -145,7 +145,7 @@ public interface CircleBlock {
 }
 ```
 
-BlockAdapter가 두 인터페이스를 구현할 때 문제가 발생합니다.
+`BlockAdapter`가 두 인터페이스를 구현할 때 문제가 발생합니다.
 
 ```java
 @RequiredArgsConstructor
@@ -161,14 +161,14 @@ public class BlockAdapter implements SquareBlock, CircleBlock {
 }
 ```
 
-`getArea()` 메서드의 반환 타입이 서로 호환되지 않는 관계이기에 `int getArea()`, `double getArea()` 메서드를 2개를 구현해야 합니다. 하지만 Java 언어의 제약으로 Signature가 같은 메서드는 하나의 클래스에서 둘 이상 만들 수 없습니다.
+메서드의 반환 타입이 서로 호환되지 않는 관계이기에 `int getArea()`, `double getArea()` 메서드 2개를 구현해야 합니다. 하지만 Java 언어의 제약으로 Signature가 같은 메서드는 하나의 클래스에서 둘 이상 만들 수 없습니다.
 
 이런 경우에는 아래의 방법으로 해결할 수 있겠죠.
 
 1. `SquareBlock`의 Method Signature를 변경한다. (`CircleBlock`을 수정할 수 없을 경우)
 2. 객체 어댑터 방식으로 해결한다.
 
-1번은 그닥 좋은 방법이 아닙니다. `SquareBlock`를 사용하는 기존 클래스가 많을수록 변경의 영향이 커집니다. 게다가 Toy가 아래와 같이 변경된다면 어댑터 패턴을 사용한 게 오히려 독이 될 수도 있습니다.
+1번은 그닥 좋은 방법이 아닙니다. `SquareBlock`를 사용하는 기존 클래스가 많을수록 변경의 영향이 커집니다. 게다가 `Toy`가 아래와 같이 변경된다면 어댑터 패턴을 사용한 게 오히려 독이 될 수도 있습니다.
 
 ```java
 public interface TriangleBlock {
@@ -201,7 +201,102 @@ public class Toy {
 }
 ```
 
-클라이언트에서 원하는 타입들의 Method Signature가 동일한 상황입니다. 이 경우 어댑터 클래스가 `CircleBlock`와 `TriangleBlock`를 다중상속하는 순간 똑같이 컴파일 에러가 발생합니다. 심지어 `SquareBlock`은 구현하지도 않았는데도 말이죠.
+클라이언트가 원하는 새로운 타입 `TriangleBlock`이 추가됐고, Method Signature가 동일한 상황입니다.
+
+이 경우 어댑터 클래스가 `CircleBlock`와 `TriangleBlock`을 다중상속하는 순간 똑같이 컴파일 에러가 발생합니다. 심지어 `SquareBlock`은 구현하지도 않았는데도 말이죠. 게다가 우리가 핸들링하는 인터페이스가 새로 추가되면 어떻게 될까요?
+
+```java
+interface CircleBlock {
+
+    double area();
+
+}
+
+interface SquareBlock {
+
+    int getSquareArea();
+
+}
+
+interface RectangleBlock {
+
+    int getRectangleArea();
+
+}
+
+public class BlockAdapter implements SquareBlock, RectangleBlock, CircleBlock {
+
+    private final int width;
+
+    private final int length;
+
+    private BlockAdapter(int width, int length) {
+        this.width = width;
+        this.length = length;
+    }
+
+    public static BlockAdapter asSquare(int width) {
+        return new BlockAdapter(width, width);
+    }
+
+    public static BlockAdapter asRectangle(int width, int length) {
+        return new BlockAdapter(width, length);
+    }
+
+    @Override
+    public double area() {
+        int diameter = Math.min(this.width, this.length);
+        return diameter * 3.14;
+    }
+
+    @Override
+    public int getSquareArea() {
+        return this.width * 2;
+    }
+
+    @Override
+    public int getRectangleArea() {
+        return this.width * this.length;
+    }
+
+}
+```
+
+인터페이스 `RectangleBlock`가 추가되어, 기존의 생성자 `BlockAdapter(int)`만으로는 변경사항을 수용할 수 없게 되었습니다. 이 어댑터는 사용 책임뿐 아니라 생성 책임을 인터페이스 개수만큼 갖고 있어 무거운 클래스가 되었습니다. 이 상황에 인터페이스 `DiamondBlock`가 추가된다고 생각하면... 끔찍하네요.
+
+이걸 객체 어댑터로 구현해보겠습니다.
+
+```java
+interface Block {
+
+    int getWidth();
+
+    int getLength();
+
+}
+
+interface SquareBlock extends Block {
+}
+
+interface RectangleBlock extends Block {
+}
+
+@Setter
+public class BlockAdapter implements CircleBlock {
+
+    private Block block;
+
+    @Override
+    public double area() {
+        int diameter = Math.min(this.block.getWidth(), this.block.getLength());
+        return diameter * 3.14;
+    }
+
+}
+```
+
+상위 Adaptee 인터페이스 `Block`으로 여러 인터페이스를 수용할 수 있도록 변경했습니다. 생성 책임을 외부에 전가하고 사용 책임만 담당하여 SRP를 만족했습니다. 그렇다고 클래스 어댑터가 안 좋은 방법이라는 건 아닙니다. Adaptee가 잘 변경되지 않는 부분이고 복잡한 로직을 갖고 있지 않다면 간단한 해결 방법이 될 수 있습니다. 다만 실무에서는 Adaptee가 복잡한 로직을 갖고 있는 게 대부분이니, 비즈니스 로직은 Adaptee에게 구현 책임을 지우고 Adapter는 Adaptee와 클라이언트를 연결해주는 책임에 집중하는 게 좋은 방법이라고 생각합니다.
+
 
 
 ### Converter (컨버터)와 차이점
@@ -216,4 +311,4 @@ public class Toy {
 
 {% embed url="https://java-design-patterns.com/patterns/adapter/" %}
 
-[^1]: 어댑터에게 제공하는 객체라는 뜻에서 **adaptee**라고 합니다.
+[^1]: 어댑터에게 제공하는 객체라는 뜻에서 **Adaptee**라고 합니다.
