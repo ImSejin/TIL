@@ -79,12 +79,12 @@ public class BlockAdapter implements CircleBlock {
 이제 `SquareBlock`으로 `Toy`를 마음껏 사용할 수 있습니다.
 
 ```java
-BlockAdapter adapter=new BlockAdapter();
-        adapter.setSquareBlock(new SquareBlock(4));
+BlockAdapter adapter = new BlockAdapter();
+adapter.setSquareBlock(new SquareBlock(4));
 
-        Toy toy=new Toy();
-        toy.setCircleBlock(adapter);
-        toy.play(); // Toy is joined with circle block whose area is 12.56
+Toy toy = new Toy();
+toy.setCircleBlock(adapter);
+toy.play(); // Toy is joined with circle block whose area is 12.56
 ```
 
 ### Class Adapter (클래스 어댑터)
@@ -124,12 +124,12 @@ public class BlockAdapter implements SquareBlock, CircleBlock {
 이제 Adapter와 Adaptee를 따로 생성할 필요가 없습니다.
 
 ```java
-Toy toy=new Toy();
-        toy.setCircleBlock(new BlockAdapter(6));
-        toy.play(); // Toy is joined with circle block whose area is 18.84
+Toy toy = new Toy();
+toy.setCircleBlock(new BlockAdapter(6));
+toy.play(); // Toy is joined with circle block whose area is 18.84
 ```
 
-#### 주의사항
+### 주의사항
 
 클래스 어댑터는 제약사항이 하나 있습니다. 인터페이스의 Method Signature가 동일하고 반환 타입이 서로 호환되지 않는 관계라면 컴파일 에러가 발생하는 점입니다.
 
@@ -296,7 +296,7 @@ public class BlockAdapter implements CircleBlock {
 
 상위 Adaptee 인터페이스 `Block`으로 여러 인터페이스를 수용할 수 있도록 변경했습니다. 생성 책임을 외부에 전가하고 사용 책임만 담당하여 **SRP**를 만족했습니다. 그렇다고 클래스 어댑터가 안 좋은 방법이라는 건 아닙니다. Adaptee가 잘 변경되지 않는 부분이고 복잡한 로직을 갖고 있지 않다면 간단한 해결 방법이 될 수 있습니다. 다만 실무에서는 Adaptee가 복잡한 로직을 갖고 있는 게 대부분이니, 비즈니스 로직은 Adaptee에게 구현 책임을 지우고 Adapter는 Adaptee와 클라이언트를 연결해주는 책임에 집중하는 게 좋은 방법이라고 생각합니다.
 
-### Converter (컨버터)와 차이점
+## Converter (컨버터)와 차이점
 
 ## 참고
 
