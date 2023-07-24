@@ -37,7 +37,6 @@ public class Toy {
 하지만 우리는 `SquareBlock`만 갖고 있다고 해봅시다.
 
 ```java
-
 @RequiredArgsConstructor
 public class SquareBlock {
 
@@ -59,7 +58,6 @@ public class SquareBlock {
 클라이언트가 원하는 타입을 상속하고 [우리가 핸들링할 수 있는 객체](#user-content-fn-1)[^1]를 필드로 선언하는 형태입니다.
 
 ```java
-
 @Setter
 public class BlockAdapter implements CircleBlock {
 
@@ -102,7 +100,6 @@ public interface SquareBlock {
 `CircleBlock`과 `SquareBlock`를 모두 구현하는 어댑터를 만들면 됩니다.
 
 ```java
-
 @RequiredArgsConstructor
 public class BlockAdapter implements SquareBlock, CircleBlock {
 
@@ -146,7 +143,6 @@ public interface CircleBlock {
 `BlockAdapter`가 두 인터페이스를 구현할 때 문제가 발생합니다.
 
 ```java
-
 @RequiredArgsConstructor
 public class BlockAdapter implements SquareBlock, CircleBlock {
 
