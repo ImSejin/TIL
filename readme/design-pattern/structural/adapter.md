@@ -8,42 +8,41 @@
 
 ## 예시
 
-220V를 필요로 하는 컴퓨터가 있다. 해외의 호텔 방에 투숙하니 콘센트는 모두 110V입니다.\
-110V 플러그에 어댑터를 끼워 220V 전자제품과 호환되도록 합니다.
+원형 블럭을 필요로 하는 장난감이 있다고 가정해봅시다. 우리가 갖고 있는 블럭은 네모 블럭밖에 없는 상황에서 이 문제를 어떻게 해결해야 할까요? 직접 원형 블럭을 만들자니 네모 블럭이랑 형태만 다르지 쓰임새는 비슷하고, 억지로 끼우자니 구멍에 안 맞는 상황. 이럴 때 어댑터를 사용할 수 있습니다.
 
 
 
-클래스 `Computer` 가 동작하기 위해서 `Plug110V`를 주입받아야 합니다.
+클래스 `Toy`가 동작하기 위해서 `CircleBlock`를 주입받아야 합니다.
 
 ```java
-public interface Plug110V {
+public interface CircleBlock {
 
-    int charge();
+    double area();
 
 }
 
-public class Computer {
+@Setter
+public class Toy {
     
-    private Plug110V plug110V;
+    private CircleBlock circleBlock;
     
-    public void setPlug110V(Plug110V plug110V) {
-        this.plug110Vug = plug110V;
-    }
-    
-    public void run() {
-        System.out.println("Computer is running on " + plug110V.charge() + "V");
+    public void play() {
+        System.out.println("Toy is joined with circle block whose area is " + circleBlock.area());
     }
     
 }
 ```
 
-하지만 우리는 `Plug110V`를 직접 생성할 수 없고, `Plug220V`만 갖고 있다고 해봅시다.
+하지만 우리는 `SquareBlock`만 갖고 있다고 해봅시다.
 
 ```java
-public class Plug220V {
+@RequiredArgsConstructor
+public class SquareBlock {
 
-    public int getVoltage() {
-        return 220;
+    private final int width;
+    
+    public int getArea() {
+        return this.width * 2;
     }
 
 }
@@ -60,41 +59,109 @@ public class Plug220V {
 클라이언트가 원하는 타입을 상속하고 [우리가 핸들링할 수 있는 객체](#user-content-fn-1)[^1]를 필드로 선언하는 형태입니다.
 
 ```java
-public class PlugAdapter implements Plug110V {
+@Setter
+public class BlockAdapter implements CircleBlock {
 
-    private Plug220V plug220V;
-
-    public void setPlug(Plug220V plug220V) {
-        this.plug220V = plug220V;
-    }
+    private SquareBlock squareBlock;
 
     @Override
-    public int charge() {
-        return plug220V.getVoltage();
+    public double area() {
+        int width = squareBlock.getArea() / 2;
+        return width * 3.14;
     }
 
 }
 ```
 
-인터페이스 `Plug110V`를 구현한 어댑터 클래스를 만듭니다. 이 어댑터는 `Plug220V`를 받아서 `Plug110V` 구현에 활용하고 있습니다. 마치 220V를 110V로 변환하는 것처럼요.
+인터페이스 `CircleBlock`를 구현한 어댑터 클래스를 만듭니다. 이 어댑터는 `SquareBlock`를 받아서 `CircleBlock`구현에 활용하고 있습니다. 마치 네모 블럭을 원형 블럭으로 변환하는 것처럼요.
 
-이제  `Plug220V`로 `Computer`를 마음껏 사용할 수 있습니다.
+이제  `SquareBlock`으로 `Toy`를 마음껏 사용할 수 있습니다.
 
 ```java
-PlugAdapter adapter = new PlugAdapter();
-adapter.setPlug(new Plug220V());
+BlockAdapter adapter = new BlockAdapter();
+adapter.setSquareBlock(new SquareBlock(4));
 
-Computer computer = new Computer();
-computer.setPlug110V(adapter);
+Toy toy = new Toy();
+toy.setCircleBlock(adapter);
+toy.play(); // Toy is joined with circle block whose area is 12.56
 ```
 
 
 
 ### Class Adapter (클래스 어댑터)
 
+만약 `SquareBlock`이 인터페이스라면 다중 상속으로 해결할 수도 있습니다.
+
+```java
+public interface SquareBlock {
+
+    int getArea();
+
+}
+```
+
+CircleBlock과 SquareBlock를 모두 구현하는 어댑터를 만들면 됩니다.
+
+```java
+@RequiredArgsConstructor
+public class BlockAdapter implements SquareBlock, CircleBlock {
+
+    private final int width;
+
+    @Override
+    public double area() {
+        return this.width * 3.14;
+    }
+
+    @Override
+    public int getArea() {
+        return this.width * 2;
+    }
+
+}
+```
+
+이제 Adapter와 Adaptee를 따로 생성할 필요가 없습니다.
+
+```java
+Toy toy = new Toy();
+toy.setCircleBlock(new BlockAdapter(6));
+toy.play(); // Toy is joined with circle block whose area is 18.84
+```
 
 
 
+#### 주의사항
+
+클래스 어댑터는 제약사항이 하나 있습니다. 인터페이스의 Method Signature가 동일하고 반환 타입이 서로 호환되지 않는 관계라면 컴파일 에러가 발생하는 점입니다.
+
+만약 CircleBlock이 아래와 같았다고 가정해봅시다.
+
+```java
+public interface CircleBlock {
+
+    double getArea();
+
+}
+```
+
+BlockAdapter가 두 인터페이스를 구현할 때 문제가 발생합니다.
+
+```java
+@RequiredArgsConstructor
+public class BlockAdapter implements SquareBlock, CircleBlock {
+
+    private final int width;
+
+    @Override
+    public int getArea() { // Compile Error
+        return this.width * 2;
+    }
+
+}
+```
+
+getArea() 메서드의 반환 타입이     서로 호환되지 않는 관계이기에&#x20;
 
 
 
