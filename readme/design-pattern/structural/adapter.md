@@ -100,7 +100,7 @@ public interface SquareBlock {
 }
 ```
 
-CircleBlock과 SquareBlock를 모두 구현하는 어댑터를 만들면 됩니다.
+`CircleBlock`과 `SquareBlock`를 모두 구현하는 어댑터를 만들면 됩니다.
 
 ```java
 @RequiredArgsConstructor
@@ -135,7 +135,7 @@ toy.play(); // Toy is joined with circle block whose area is 18.84
 
 클래스 어댑터는 제약사항이 하나 있습니다. 인터페이스의 Method Signature가 동일하고 반환 타입이 서로 호환되지 않는 관계라면 컴파일 에러가 발생하는 점입니다.
 
-만약 CircleBlock이 아래와 같았다고 가정해봅시다.
+만약 `CircleBlock`이 아래와 같았다고 가정해봅시다.
 
 ```java
 public interface CircleBlock {
@@ -161,33 +161,48 @@ public class BlockAdapter implements SquareBlock, CircleBlock {
 }
 ```
 
-getArea() 메서드의 반환 타입이     서로 호환되지 않는 관계이기에&#x20;
+`getArea()` 메서드의 반환 타입이 서로 호환되지 않는 관계이기에 `int getArea()`, `double getArea()` 메서드를 2개를 구현해야 합니다. 하지만 Java 언어의 제약으로 Signature가 같은 메서드는 하나의 클래스에서 둘 이상 만들 수 없습니다.
 
+이런 경우에는 아래의 방법으로 해결할 수 있겠죠.
 
+1. `SquareBlock`의 Method Signature를 변경한다. (`CircleBlock`을 수정할 수 없을 경우)
+2. 객체 어댑터 방식으로 해결한다.
 
-
+1번은 그닥 좋은 방법이 아닙니다. `SquareBlock`를 사용하는 기존 클래스가 많을수록 변경의 영향이 커집니다. 게다가 Toy가 아래와 같이 변경된다면 어댑터 패턴을 사용한 게 오히려 독이 될 수도 있습니다.
 
 ```java
-public interface Plug {
+public interface TriangleBlock {
 
-    int getVoltage();
+    long getArea();
 
 }
 
-public class Product {
+public class Toy {
     
-    private Plug plug;
-    
-    public void setPlug(Plug plug) {
-        this.plug = plug;
+    private CircleBlock circleBlock;
+
+    private TriangleBlock triangleBlock;
+
+    public void setCircleBlock(CircleBlock circleBlock) {
+        this.circleBlock = circleBlock;
+        this.triangleBlock = null;
     }
-    
-    public void doSomething() {
-        System.out.println("")
+
+    public void setTriangleBlock(TriangleBlock triangleBlock) {
+        this.triangleBlock = triangleBlock;
+        this.circleBlock = null;
+    }
+
+    public void play() {
+        Number area = this.circleBlock == null ? this.triangleBlock.getArea() : this.circleBlock.getArea();
+        System.out.println("Toy is joined with circle block whose area is " + area);
     }
     
 }
 ```
+
+클라이언트에서 원하는 타입들의 Method Signature가 동일한 상황입니다. 이 경우 어댑터 클래스가 `CircleBlock`와 `TriangleBlock`를 다중상속하는 순간 똑같이 컴파일 에러가 발생합니다. 심지어 `SquareBlock`은 구현하지도 않았는데도 말이죠.
+
 
 ### Converter (컨버터)와 차이점
 
