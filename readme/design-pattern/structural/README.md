@@ -1,5 +1,7 @@
 ---
 description: 객체 결합
+cover: ../../../.gitbook/assets/blue-lego-block.png
+coverY: 0
 ---
 
 # Structural (구조)
