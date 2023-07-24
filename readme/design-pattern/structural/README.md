@@ -13,6 +13,8 @@ coverY: 0
 
 {% embed url="https://itwiki.kr/w/GoF_%EB%94%94%EC%9E%90%EC%9D%B8_%ED%8C%A8%ED%84%B4#%EA%B5%AC%EC%A1%B0_%ED%8C%A8%ED%84%B4(Structural_Pattern)" %}
 
+{% embed url="https://www.hanbit.co.kr/channel/category/category_view.html?cms_code=CMS8616098823" %}
+
 {% embed url="https://en.wikipedia.org/wiki/Design_Patterns" %}
 
 {% embed url="https://refactoring.guru/design-patterns/structural-patterns" %}
