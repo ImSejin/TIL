@@ -1,5 +1,7 @@
 ---
 description: JSR-303, JSR-308
+cover: ../../.gitbook/assets/springframework-logo.png
+coverY: 0
 ---
 
 # Validation

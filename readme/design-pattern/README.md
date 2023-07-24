@@ -1,3 +1,8 @@
+---
+cover: ../../.gitbook/assets/blue-lego-block.png
+coverY: 0
+---
+
 # 🏗 Design Pattern
 
 ## 문제 해결 능력의 향상
