@@ -55,7 +55,7 @@ public class SquareBlock {
 
 ### Object Adapter (객체 어댑터)
 
-클라이언트가 원하는 타입을 구현하고 [우리가 핸들링할 수 있는 객체](#user-content-fn-1)[^1]를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
+[Target 타입](#user-content-fn-1)[^1]을 구현하고 Adaptee[^2]를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
 
 ```java
 @Setter
@@ -285,6 +285,75 @@ public class BlockAdapter implements CircleBlock {
 
 다만 실무에서는 대부분 Adaptee가 복잡한 로직을 갖고 있습니다. 합성을 통해 비즈니스 로직은 Adaptee에게 구현 책임을 지우고 Adapter는 Adaptee와 클라이언트를 연결해주는 책임에 집중하는 게 좋은 방법이라고 생각합니다.
 
+
+
+### 실제 적용 사례
+
+Spring Validation을 보면 어댑터 패턴으로 설계되어 있습니다.
+
+```java
+public class SpringValidatorAdapter implements SmartValidator, jakarta.validation.Validator {
+
+    @Nullable
+    private jakarta.validation.Validator targetValidator;
+
+    public SpringValidatorAdapter(jakarta.validation.Validator targetValidator) {
+        Assert.notNull(targetValidator, "Target Validator must not be null");
+        this.targetValidator = targetValidator;
+    }
+
+    void setTargetValidator(jakarta.validation.Validator targetValidator) {
+        this.targetValidator = targetValidator;
+    }
+    
+    /* ... */
+
+}
+```
+
+`SmartValidator`는 `org.springframework.validation.Validator`의 서브 인터페이스입니다.\
+흥미롭게도 합성과 상속을 모두 활용하여 JSR-303와 Spring Validation 간 비호환성을 해결했습니다.
+
+<mark style="background-color:purple;">합성은 단방향 호환</mark>만 지원하지만, `SpringValidatorAdapter`는 <mark style="background-color:purple;">양방향 호환을 위해 상속</mark>을 쓸 수밖에 없는 상황입니다. 합성만 사용하려고 한다면 어댑터를 2개 만들어야 합니다.
+
+합성을 함께 사용한 이유는 `jakarta.validation.Validator`의 구현체가 `org.hibernate.validator.internal.engine.ValidatorImpl`인데, Spring이 구현체에 직접 의존할 필요도, 직접 구현할 필요도 없기 때문입니다.
+
+계속해서 `SpringValidatorAdapter`의 구현부를 보겠습니다.
+
+```java
+//---------------------------------------------------------------------
+// Implementation of Spring Validator interface
+//---------------------------------------------------------------------
+
+@Override
+public boolean supports(Class<?> clazz) {
+    return (this.targetValidator != null);
+}
+
+@Override
+public void validate(Object target, Errors errors) {
+    if (this.targetValidator != null) {
+        processConstraintViolations(this.targetValidator.validate(target), errors);
+    }
+}
+
+/* ... */
+
+//---------------------------------------------------------------------
+// Implementation of JSR-303 Validator interface
+//---------------------------------------------------------------------
+
+@Override
+public <T> Set<ConstraintViolation<T>> validate(T object, Class<?>... groups) {
+    Assert.state(this.targetValidator != null, "No target Validator set");
+    return this.targetValidator.validate(object, groups);
+}
+```
+
+Adaptee를 활용하여 2개의 인터페이스가 되었습니다.
+
+
+
 ## Converter (컨버터)와 차이점
 
 ## 참고
@@ -293,4 +362,8 @@ public class BlockAdapter implements CircleBlock {
 
 {% embed url="https://java-design-patterns.com/patterns/adapter/" %}
 
-[^1]: 어댑터에게 제공하는 객체라는 뜻에서 **Adaptee**라고 합니다.
+[^1]: 클라이언트가 원하는 타입.
+
+[^2]: 어댑터에게 제공하는 객체.
+
+    우리가 제어할 수 있는 객체.
