@@ -7,7 +7,7 @@ interface CircleBlock {
 class Toy {
     - circleBlock: CircleBlock
 
-    + setCircleBlock(CircleBlock): void
+    + setCircleBlock(circleBlock: CircleBlock): void
     + play(): void
 }
 
