@@ -52,11 +52,23 @@ public class SquareBlock {
 
 이럴 때 어댑터를 사용할 수 있습니다.
 
+
+
+> `SquareBlock`이 `CircleBlock`을 구현하도록 하면 되지 않나요?
+
+호환되지 않는 클래스를 변경하는 게 간단하다면 권장합니다. 다만 아래의 문제가 있습니다.
+
+* `SquareBlock`이 유사한 성격의 API(`getArea()`, `area()`)를 노출하여 애매모호함을 야기합니다.&#x20;
+* `SquareBlock`은 `CircleBlock`과 비즈니스적 연관성이 없는데도, 구현을 책임져야 합니다.
+* 호환되지 않는 클래스가 늘어날수록, 코드도 그만큼 고쳐야 합니다.
+
+
+
 ## 구현
 
 ### Object Adapter (객체 어댑터)
 
-[Target 타입](#user-content-fn-1)[^1]을 구현하고 Adaptee[^2]를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
+[Target 타입](#user-content-fn-1)[^1]을 구현하고 Adaptee를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
 
 ![](../../../.gitbook/uml/programming/design-pattern/structural/adapter/object-adapter.svg)
 
@@ -288,8 +300,6 @@ public class BlockAdapter implements CircleBlock {
 
 다만 실무에서는 대부분 Adaptee가 복잡한 로직을 갖고 있습니다. 합성을 통해 비즈니스 로직은 Adaptee에게 구현 책임을 지우고 Adapter는 Adaptee와 클라이언트를 연결해주는 책임에 집중하는 게 좋은 방법이라고 생각합니다.
 
-
-
 ### 실제 적용 사례
 
 Spring Validation을 보면 어댑터 패턴으로 설계되어 있습니다.
@@ -378,6 +388,6 @@ Adaptee를 활용하여 서로 다른 인터페이스가 호환되었습니다.
 
 {% embed url="https://java-design-patterns.com/patterns/adapter/" %}
 
-[^1]: 클라이언트가 원하는 타입.
+1. 어댑터에게 제공하는 객체.
 
-[^2]: 어댑터에게 제공하는 객체.
+[^1]: 클라이언트가 원하는 타입.
