@@ -1,0 +1,33 @@
+@startuml
+
+interface CircleBlock {
+    + area(): double
+}
+
+class Toy {
+    - circleBlock: CircleBlock
+
+    + setCircleBlock(circleBlock: CircleBlock): void
+    + play(): void
+}
+
+class SquareBlock {
+    - width: int
+
+    + SquareBlock(int: width)
+    + getWidth(): int
+    + getArea(): int
+}
+
+class BlockAdapter {
+    - squareBlock: SquareBlock
+
+    + setSquareBlock(squareBlock: SquareBlock): void
+    + area(): double
+}
+
+CircleBlock <-- Toy
+CircleBlock <|.. BlockAdapter
+SquareBlock <-- BlockAdapter
+
+@enduml

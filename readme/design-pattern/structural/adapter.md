@@ -37,6 +37,7 @@ public class Toy {
 하지만 우리는 `SquareBlock`만 갖고 있다고 해봅시다.
 
 ```java
+@Getter
 @RequiredArgsConstructor
 public class SquareBlock {
 
@@ -56,6 +57,8 @@ public class SquareBlock {
 ### Object Adapter (객체 어댑터)
 
 [Target 타입](#user-content-fn-1)[^1]을 구현하고 Adaptee[^2]를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
+
+![](../../../.gitbook/uml/programming/design-pattern/structural/adapter/object-adapter.svg)
 
 ```java
 @Setter
@@ -89,10 +92,10 @@ toy.play(); // Toy is joined with circle block whose area is 12.56
 
 Adaptee를 <mark style="background-color:purple;">상속</mark>하여 해결할 수도 있습니다.
 
+![](../../../.gitbook/uml/programming/design-pattern/structural/adapter/class-adapter.svg)
+
 ```java
 public class BlockAdapter extends SquareBlock implements CircleBlock {
-
-    private final int width;
 
     public BlockAdapter(int width) {
         super(width);
@@ -100,7 +103,7 @@ public class BlockAdapter extends SquareBlock implements CircleBlock {
 
     @Override
     public double area() {
-        return this.width * 3.14;
+        return super.getWidth() * 3.14;
     }
 
 }
@@ -113,6 +116,8 @@ Toy toy = new Toy();
 toy.setCircleBlock(new BlockAdapter(6));
 toy.play(); // Toy is joined with circle block whose area is 18.84
 ```
+
+안타깝게도 이 방법은 한계점이 있습니다. `SquareBlock`의 서브 클래스 `WoodenSquareBlock`이 있다고 가정해봅시다. `BlockAdapter`는 이미 `SquareBlock`를 상속했기 때문에 `WoodenSquareBlock`에서 추가된 기능을 사용할 수 없습니다.
 
 ### 주의사항
 
@@ -133,15 +138,13 @@ public interface CircleBlock {
 ```java
 public class BlockAdapter extends SquareBlock implements CircleBlock {
 
-    private final int width;
-
     public BlockAdapter(int width) {
         super(width);
     }
 
     @Override
     public double getArea() { // Compile Error
-        return this.width * 3.14;
+        return super.getWidth() * 3.14;
     }
 
 }
@@ -350,11 +353,21 @@ public <T> Set<ConstraintViolation<T>> validate(T object, Class<?>... groups) {
 }
 ```
 
-Adaptee를 활용하여 2개의 인터페이스가 되었습니다.
+Adaptee를 활용하여 서로 다른 인터페이스가 호환되었습니다.
 
+## 요약
 
+### 적용 케이스
 
-## Converter (컨버터)와 차이점
+* 기존 클래스를 사용하고 싶지만, 다른 인터페이스와 호환되지 않을 때 어댑터를 사용합니다.
+* 변경할 수 없는 라이브러리와 이를 사용하는 클라이언트 간에 어댑터를 추가하여 중간 계층으로 사용합니다. 라이브러리를 교체하는 경우, 애플리케이션 코드를 수정할 필요 없이 기존 어댑터만 새 라이브러리에 맞게 변경합니다.
+
+### 장단점
+
+* SRP: 비즈니스 로직에서 타입 변환 코드를 분리할 수 있습니다.
+* OCP: 기존의 애플리케이션 코드를 수정하지 않고 Target 인터페이스를 쉽게 변경할 수 있습니다.
+* 비즈니스와 관련되지 않은 클래스가 추가되어 전반적인 코드 복잡성이 증가합니다.
+* 어댑터 클래스를 추가하는 것보다 Target 인터페이스에 맞게 변경하는 게 더 간단할 수 있습니다.
 
 ## 참고
 
@@ -365,5 +378,3 @@ Adaptee를 활용하여 2개의 인터페이스가 되었습니다.
 [^1]: 클라이언트가 원하는 타입.
 
 [^2]: 어댑터에게 제공하는 객체.
-
-    우리가 제어할 수 있는 객체.
