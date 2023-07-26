@@ -68,7 +68,7 @@ public class SquareBlock {
 
 ### Object Adapter (객체 어댑터)
 
-[Target 타입](#user-content-fn-1)[^1]을 구현하고 Adaptee를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
+[Target 타입](#user-content-fn-1)[^1]을 구현하고 Adaptee[^2]를 <mark style="background-color:purple;">합성</mark>하는 형태입니다.
 
 ![](../../../.gitbook/uml/programming/design-pattern/structural/adapter/object-adapter.svg)
 
@@ -391,3 +391,5 @@ Adaptee를 활용하여 서로 다른 인터페이스가 호환되었습니다.
 1. 어댑터에게 제공하는 객체.
 
 [^1]: 클라이언트가 원하는 타입.
+
+[^2]: 어댑터에게 제공하는 객체.
