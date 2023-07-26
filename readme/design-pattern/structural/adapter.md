@@ -388,7 +388,7 @@ Adaptee를 활용하여 서로 다른 인터페이스가 호환되었습니다.
 
 {% embed url="https://java-design-patterns.com/patterns/adapter/" %}
 
-1. 어댑터에게 제공하는 객체.
+
 
 [^1]: 클라이언트가 원하는 타입.
 
