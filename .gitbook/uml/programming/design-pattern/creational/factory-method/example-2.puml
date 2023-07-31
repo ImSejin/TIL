@@ -1,0 +1,55 @@
+@startuml
+
+interface Transport {
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+class Motorcycle {
+    - cargo: Object
+
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+class Truck {
+    - cargoes: Object[]
+    - cursor: int
+
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+class Train {
+    - cargoes: Object[]
+    - cursor: int
+
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+interface TransportFactory {
+    + create(): Transport
+}
+
+class MotorcycleFactory {
+    + create(): Transport
+}
+
+class TruckFactory {
+    + create(): Transport
+}
+
+class TrainFactory {
+    + create(): Transport
+}
+
+Transport <|.. Motorcycle
+Transport <|.. Truck
+Transport <|.. Train
+TransportFactory <|.. MotorcycleFactory
+TransportFactory <|.. TruckFactory
+TransportFactory <|.. TrainFactory
+Transport <. TransportFactory
+
+@enduml

@@ -1,0 +1,59 @@
+@startuml
+
+class Invoice {
+    - quantity: int
+    - weight: int
+    - departurePoint: String
+    - destination: String
+
+    + Invoice(quantity: int, weight: int, departurePoint: String, destination: String)
+    + getQuantity(): int
+    + getWeight(): int
+    + getDeparturePoint(): String
+    + getDestination(): String
+}
+
+class Package {
+    - invoice: Invoice
+    - cargoes: List
+
+    + getInvoice(): Invoice
+    + setInvoice(invoice: Invoice): void
+    + getCargoes(): Iterator
+    + addCargo(cargo: Object): void
+}
+
+interface Transport {
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+class Motorcycle {
+    - cargo: Object
+
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+class Truck {
+    - cargoes: Object[]
+    - cursor: int
+
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+class Train {
+    - cargoes: Object[]
+    - cursor: int
+
+    + load(cargo: Object): boolean
+    + unload(): Object
+}
+
+Invoice <-- Package
+Transport <|.. Motorcycle
+Transport <|.. Truck
+Transport <|.. Train
+
+@enduml
