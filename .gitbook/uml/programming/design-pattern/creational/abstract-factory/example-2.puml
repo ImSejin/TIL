@@ -1,0 +1,68 @@
+@startuml
+
+interface CreatureOrganFactory {
+    + createBrain(): Brain
+    + createHeart(): Heart
+    + createLung(): Lung
+}
+
+class Creature {
+    - brain: Brain
+    - heart: Heart
+    - lung: Lung
+
+    + Creature(factory: CreatureOrganFactory)
+    + getBrain(): Brain
+    + getHeart(): Heart
+    + getLung(): Lung
+}
+
+class HumanBrain {
+    + think(): void
+}
+
+class HumanHeart {
+    + beat(): void
+}
+
+class HumanLung {
+    + breathe(): void
+}
+
+class HumanOrganFactory {
+    + createBrain(): Brain
+    + createHeart(): Heart
+    + createLung(): Lung
+}
+
+class DogBrain {
+    + think(): void
+}
+
+class DogHeart {
+    + beat(): void
+}
+
+class DogLung {
+    + breathe(): void
+}
+
+class DogOrganFactory {
+    + createBrain(): Brain
+    + createHeart(): Heart
+    + createLung(): Lung
+}
+
+Creature ..> CreatureOrganFactory
+
+CreatureOrganFactory <|.. HumanOrganFactory
+HumanOrganFactory ...> HumanBrain
+HumanOrganFactory ...> HumanHeart
+HumanOrganFactory ...> HumanLung
+
+CreatureOrganFactory <|.. DogOrganFactory
+DogOrganFactory ...> DogBrain
+DogOrganFactory ...> DogHeart
+DogOrganFactory ...> DogLung
+
+@enduml

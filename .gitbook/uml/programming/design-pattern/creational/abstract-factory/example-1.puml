@@ -1,0 +1,62 @@
+@startuml
+
+interface Brain {
+    + think(): void
+}
+
+interface Heart {
+    + beat(): void
+}
+
+interface Lung {
+    + breathe(): void
+}
+
+class Creature {
+    - brain: Brain
+    - heart: Heart
+    - lung: Lung
+
+    + Creature(brain: Brain, heart: Heart, lung: Lung)
+    + getBrain(): Brain
+    + getHeart(): Heart
+    + getLung(): Lung
+}
+
+class HumanBrain {
+    + think(): void
+}
+
+class HumanHeart {
+    + beat(): void
+}
+
+class HumanLung {
+    + breathe(): void
+}
+
+class DogBrain {
+    + think(): void
+}
+
+class DogHeart {
+    + beat(): void
+}
+
+class DogLung {
+    + breathe(): void
+}
+
+Creature --> Brain
+Creature --> Heart
+Creature --> Lung
+
+Brain <|.. HumanBrain
+Heart <|.. HumanHeart
+Lung <|.. HumanLung
+
+Brain <|.. DogBrain
+Heart <|.. DogHeart
+Lung <|.. DogLung
+
+@enduml
